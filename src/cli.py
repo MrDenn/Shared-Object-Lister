@@ -15,6 +15,11 @@ def main():
         with open(args.file_path, 'rb') as file:
             functions = parse_shared_object_file(file)
             functions.sort(key=sort_criteria)
+            for func in functions:
+                print_function(func)
+        with open(args.file_path, 'rb') as file:
+            functions = parse_shared_object_file(file)
+            functions.sort(key=sort_criteria)
             max_len = get_max_function_name_length(functions)
             print_functions(functions, max_len)
     except FileNotFoundError:
