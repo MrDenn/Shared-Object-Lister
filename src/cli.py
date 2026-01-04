@@ -15,7 +15,8 @@ def main():
         with open(args.file_path, 'rb') as file:
             functions = parse_shared_object_file(file)
             functions.sort(key=sort_criteria)
-            print_functions(functions)
+            max_len = get_max_function_name_length(functions)
+            print_functions(functions, max_len)
     except FileNotFoundError:
         print(f"Error: File '{args.file_path}' not found.", file=sys.stderr)
         sys.exit(1)
@@ -39,6 +40,15 @@ def sort_criteria(function):
     # Sort primarily by visibility, then by function name
     return (priority, name)
 
-def print_functions(functions):
+def get_max_function_name_length(functions):
+    max_name_length = 0
+
     for function in functions:
-        print(f"Name: {function[0]:<25} Visibility: {function[1]}")
+        if len(function[0]) > max_name_length:
+            max_name_length = len(function[0])
+
+    return max_name_length
+
+def print_functions(functions, max_name_length):
+    for function in functions:
+        print(f"Name: {function[0]:<{max_name_length}} | Visibility: {function[1]}")
