@@ -48,23 +48,23 @@ class TestIntegration(unittest.TestCase):
 
     def test_global_symbol(self):
         # Global functions should be present in returned array
-        self.assertIn(['global_function', 'STB_GLOBAL'], self.parsing_results)
+        self.assertIn(('global_function', 'STB_GLOBAL'), self.parsing_results)
 
     def test_weak_symbol(self):
         # Weak functions should be present in returned array
-        self.assertIn(['weak_function', 'STB_WEAK'], self.parsing_results)
+        self.assertIn(('weak_function', 'STB_WEAK'), self.parsing_results)
 
     def test_local_symbol(self):
         # No local functions should be present in returned array
-        self.assertNotIn(['local_function', 'STB_LOCAL'], self.parsing_results)
-        self.assertNotIn(['', 'STB_LOCAL'], self.parsing_results)
+        self.assertNotIn(('local_function', 'STB_LOCAL'), self.parsing_results)
+        self.assertNotIn(('', 'STB_LOCAL'), self.parsing_results)
 
     def test_sorting_algorithm(self):
         # Test correctness of sorting algorithm in cli.py
         self.parsing_results.sort(key=sort_criteria)
         # Set indices to reflect position of these functions in sorted array
-        index_a = self.parsing_results.index(['a_function', 'STB_GLOBAL'])
-        index_z = self.parsing_results.index(['z_function', 'STB_GLOBAL'])
+        index_a = self.parsing_results.index(('a_function', 'STB_GLOBAL'))
+        index_z = self.parsing_results.index(('z_function', 'STB_GLOBAL'))
         # Index of 'a_function' should be less than index of 'b_function'
         self.assertLess(index_a, index_z, "a_function should be printed above z_function")
 
