@@ -15,11 +15,12 @@ def parse_shared_object_file(file_path):
         section = elf.get_section_by_name('.dynsym') # only look in the Dynamic Symbol Table
 
         for symbol in section.iter_symbols():
-            name = symbol.name               # name of symbol
-            type = symbol['st_info']['type'] # type of symbol
-            bind = symbol['st_info']['bind'] # visibility of symbol
-            section = symbol['st_shndx']     # location of symbol in library (if SHN_UNDEF, then borrowed)
+            is_function = symbol['st_info']['type'] == 'STT_FUNC'
+            is_visible = symbol['st_info']['bind'] in ('STB_WEAK', 'STB_GLOBAL')
+            is_defined_here = symbol['st_shndx'] != 'SHN_UNDEF'
 
             print(f"Name: {name:<32} Type: {type:<13} Binding: {bind:<13} Section: {symbol['st_shndx']}")
+            if is_function and is_visible and is_defined_here:
+                print(f"Name: {symbol.name:<32} Binding: {symbol['st_info']['bind']:<13}")
 
 
