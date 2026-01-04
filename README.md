@@ -69,26 +69,38 @@ python3 [path to test_integration.py]
 /usr/local/bin/python3 /opt/project/tests/test_integration.py
 ```
 
-### Monitoring Behavior
-
-- Queries for all currently queued and in-progress workflows (last 24 hours)
-- Does **not** report completed workflows from before the tool started
-- Records the last retrieved and reported timestamp in `timestamps.json`
-
-### Graceful Shutdown
-
-Press `Ctrl+C` to stop monitoring. The tool will:
-- Complete the current polling cycle
-- Save the final timestamp
-- Exit cleanly
-
 ## Behavioral Details
 
 ### Retrieval of .so file
+
+- Path to .so file is passed through script parameters/arguments
+- The CLI script retrieves the arguments and opens the file
+- The CLI script passes the retrieved file object to the parser script
+
 ### Parsing of .so file
+
+- When the parser script receives the file object, it hands it to the pyelftools parser
+- pyelftools parser discards everything except the Dynamic Symbol Table and fragments it into 'symbols'
+
 ### Filtering of non-desired symbols
+
+- For each symbol, three checks have to be passed before it's added to the output list:
+  - The symbol has to represent a function
+  - The symbol has to be accessible from the outside (not LOCAL visibility)
+  - The symbol has to be defined within the given .so file (and not a reference to another shared object)
+
+### Sorting of the output
+
+- When the list symbols is returned by the parser to the CLI script, it's sorted using a custom sort criteria function such that:
+  - Symbols are primarily sorted by their visibility: GLOBAL first, WEAK second
+  - The remaining order is then made alphabetical by symbol name
+
 ### Dynamic formatting of output 
 
+- In the sorted list of symbols, the maximum symbol name length
+- All symbols are then printed into the console in a loop
+  - Each symbol/function name is formatted to the maximum symbol name length found earlier
+  - Then, the visibility of the corresponding symbol is printed after a separator
 
 ## Design Decisions
 
@@ -100,7 +112,14 @@ Press `Ctrl+C` to stop monitoring. The tool will:
 
 ### Sorting the output
 
+**Decision**: The output from the pyelftools parser is sorted first, primarily by the visibility value, and after that the remaining order is determined alphabetically by function name.
+- **Rationale**: sorting by visibility allows to clearly see which functions in the shared object were made to be accessible and visible (typically GLOBAL), and which are accessible for other reasons (typically WEAK).
+
 ### Compiling a fresh .so file for testing
+
+**Decision**: The test suite contains a fragment of C code, which is compiled every time it (the resulting .so file) needs to be used for testing. 
+- **Rationale**: having the C code in text form, rather than baked into bytecode allows for much easier adjustment of the .so that the tests are run for.
+- **Tradeoff**: the use of GCC for compilation means that the test suite works well mostly on Linux, and running it on other operating systems is much more challenging.
 
 ---
 
