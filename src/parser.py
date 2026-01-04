@@ -19,8 +19,12 @@ def parse_shared_object_file(file_path):
             is_visible = symbol['st_info']['bind'] in ('STB_WEAK', 'STB_GLOBAL')
             is_defined_here = symbol['st_shndx'] != 'SHN_UNDEF'
 
-            print(f"Name: {name:<32} Type: {type:<13} Binding: {bind:<13} Section: {symbol['st_shndx']}")
             if is_function and is_visible and is_defined_here:
-                print(f"Name: {symbol.name:<32} Binding: {symbol['st_info']['bind']:<13}")
+                function = []
+                function.append(symbol.name)
+                function.append(symbol['st_info']['bind'])
 
+                functions.append(function)
+
+        return functions
 
