@@ -1,11 +1,6 @@
 from typing import BinaryIO
 from elftools.elf.elffile import ELFFile
 
-# Libraries (.so files) I used for testing:
-# /usr/lib/aarch64-linux-gnu/libm.so.6
-# /usr/lib/aarch64-linux-gnu/libmpfr.so.6.2.2
-# /usr/lib/aarch64-linux-gnu/libanl.so.1
-
 def parse_shared_object_file(file: BinaryIO) -> list[tuple[str, str]]:
     """
     Parses the given object file and returns a list of exported function symbols.

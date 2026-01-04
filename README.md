@@ -15,7 +15,7 @@ native functions in the given shared object.
 Each event is printed as a single line with fixed-width columns for easy parsing and log integration:
 
 ```
-Name: [function name]   Visibility: [funciton visibiility level] 
+Name: [function name]   Visibility: [function visibility level] 
 ```
 
 ### Example Output
@@ -58,7 +58,9 @@ python3 main.py [absolute path to .so file]
 python3 [path to main.py] [absolute path to .so file]
 ```
 
-### Running Testing Suite
+### Testing
+
+The testing suite can be launched in the following two ways: 
 
 ```bash
 # On a Linux machine with all prerequisites installed:
@@ -68,6 +70,13 @@ python3 [path to test_integration.py]
 # In a Docker container constructed from the Dockerfile in this repository:
 /usr/local/bin/python3 /opt/project/tests/test_integration.py
 ```
+
+Testing can also be done by launching the main utility on a known .so file.
+When launching through a Docker container, I found some good examples to be:
+- /usr/lib/aarch64-linux-gnu/libm.so.6
+- /usr/lib/aarch64-linux-gnu/libmpfr.so.6.2.2
+- /usr/lib/aarch64-linux-gnu/libanl.so.1
+
 
 ## Behavioral Details
 
