@@ -2,7 +2,23 @@ import argparse
 import sys
 from src.parser import parse_shared_object_file
 
-def main():
+def main() -> None:
+    """
+    Entry point for the CLI application.
+
+    Parses command-line arguments, reads the specified shared object file,
+    and prints all exported function names to stdout. Handles errors gracefully
+    with informative messages sent to stderr.
+
+    Returns:
+        None
+
+    Exits:
+        sys.exit(0): On successful completion
+        sys.exit(1): If the specified file is not found
+        sys.exit(2): If other unexpected errors occur
+    """
+
     parser = argparse.ArgumentParser(
         prog="Shared Object Lister",
         description="List available native functions from a Linux .so file.")
@@ -17,14 +33,28 @@ def main():
             functions.sort(key=sort_criteria)
             max_len = get_max_function_name_length(functions)
             print_functions(functions, max_len)
+        sys.exit(0)
     except FileNotFoundError:
         print(f"Error: File '{args.file_path}' not found.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
         print(f"Error: Failed to parse file. {e}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(2)
 
-def sort_criteria(function):
+def sort_criteria(function: tuple[str, str]) -> tuple[int, str]:
+    """
+    Helper function to determine sorting order.
+
+    Priority for sorting are as follows:
+    - First, binding of the symbol (GLOBAL first, WEAK second)
+    - Then, name of the symbol (in alphabetical order)
+
+    Args:
+        function_name tuple[str, str]: The function name and visibility.
+
+    Returns:
+        str: The lowercased name for case-insensitive sorting.
+    """
     name, binding = function
 
     # GLOBAL shold be first as the higher visibility level
@@ -40,7 +70,19 @@ def sort_criteria(function):
     # Sort primarily by visibility, then by function name
     return (priority, name)
 
-def get_max_function_name_length(functions):
+def get_max_function_name_length(functions: list[tuple[str, str]]) -> int:
+    """
+    Helper function to determine the maximum function name length in the input.
+
+    Performs a linear pass through the input array and looks for the maximum name length.
+
+    Args:
+        functions: List of tuples containing function name and its visibility.
+
+    Returns:
+        int: The maximum function name length.
+
+    """
     max_name_length = 0
 
     for function in functions:
@@ -49,6 +91,16 @@ def get_max_function_name_length(functions):
 
     return max_name_length
 
-def print_functions(functions, max_name_length):
+def print_functions(functions: list[tuple[str, str]], max_name_length: int) -> None:
+    """
+    Helper function to neatly print the given function names and their visibility.
+
+    Args:
+        functions:        List of tuples containing function name and its visibility.
+        max_name_length:  The maximum function name length.
+
+    Returns:
+        None
+    """
     for function in functions:
         print(f"Name: {function[0]:<{max_name_length}} | Visibility: {function[1]}")
