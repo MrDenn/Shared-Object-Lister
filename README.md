@@ -1,12 +1,11 @@
 # Shared Object Lister
 
-A lightweight command-line tool that reads the binary data inside of Shared Object (.so) files and lists all available
+A lightweight command-line tool that reads the binary data inside the Shared Object (.so) files and lists all available
 native functions in the given shared object.
 
 ## Features
 
 - **ELF Parsing**: directly parses binary `.so` files using `pyelftools` (without reliance on system `nm` or `objdump`)
-- **Comprehensive event reporting**: workflow queuing/starts/completions, job starts/completions, step starts/completions
 - **Sorted Output**: Displays function names alphabetically for easy reading.
 - **Robust Testing**: Includes integration tests that compile real C code on-the-fly to verify parser accuracy.
 
@@ -19,6 +18,8 @@ Name: [function name]   Visibility: [function visibility level]
 ```
 
 ### Example Output
+
+Here are some lines from the output for the file /usr/lib/aarch64-linux-gnu/libm.so.6
 
 ```
 Name: exp                       Visibility: STB_GLOBAL
