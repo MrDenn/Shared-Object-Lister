@@ -28,10 +28,15 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
+        # Open .so file at the given file path
         with open(args.file_path, 'rb') as file:
+            # Retrieve function symbols from parser
             functions = parse_shared_object_file(file)
+            # Sort function symbols
             functions.sort(key=sort_criteria)
+            # Get max length among symbol names for formatting
             max_len = get_max_function_name_length(functions)
+            # Print function symbols, formatted appropriately
             print_functions(functions, max_len)
         sys.exit(0)
     except FileNotFoundError:
@@ -85,7 +90,9 @@ def get_max_function_name_length(functions: list[tuple[str, str]]) -> int:
     """
     max_name_length = 0
 
+    # Loop through all function symbols
     for function in functions:
+        # Compare stored max length with current function name length
         if len(function[0]) > max_name_length:
             max_name_length = len(function[0])
 

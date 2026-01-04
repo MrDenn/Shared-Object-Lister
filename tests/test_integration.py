@@ -44,6 +44,7 @@ class TestIntegration(unittest.TestCase):
             self.parsing_results = parse_shared_object_file(file)
 
     def tearDown(self):
+        # Temporary directory is removed when tests are completed
         self.tmp_dir.cleanup()
 
     def test_global_symbol(self):
