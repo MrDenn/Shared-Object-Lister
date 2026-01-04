@@ -13,6 +13,9 @@ def main():
 
     try:
         functions = parse_shared_object_file(args.file_path)
+
+        functions.sort(key=sort_criteria)
+
         for func in functions:
             print_function(func)
     except FileNotFoundError:
@@ -21,6 +24,22 @@ def main():
     except Exception as e:
         print(f"Error: Failed to parse file. {e}", file=sys.stderr)
         sys.exit(1)
+
+def sort_criteria(function):
+    name, binding = function
+
+    # GLOBAL shold be first as the higher visibility level
+    if binding == 'STB_GLOBAL':
+        priority = 0
+    # WEAK should be second, as it's still public, but less so
+    elif binding == 'STB_WEAK':
+        priority = 1
+    # Anything else shouldn't be possible, but added for anomalies
+    else:
+        priority = 2
+
+    # Sort primarily by visibility, then by function name
+    return (priority, name)
 
 def print_function(function):
     print(f"Name: {function[0]:<25} Visibility: {function[1]}")
