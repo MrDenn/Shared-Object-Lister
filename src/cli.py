@@ -12,12 +12,11 @@ def main():
     args = parser.parse_args()
 
     try:
-        functions = parse_shared_object_file(args.file_path)
-
-        functions.sort(key=sort_criteria)
-
-        for func in functions:
-            print_function(func)
+        with open(args.file_path, 'rb') as file:
+            functions = parse_shared_object_file(file)
+            functions.sort(key=sort_criteria)
+            for func in functions:
+                print_function(func)
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.", file=sys.stderr)
         sys.exit(1)
