@@ -15,8 +15,7 @@ def main():
         with open(args.file_path, 'rb') as file:
             functions = parse_shared_object_file(file)
             functions.sort(key=sort_criteria)
-            for func in functions:
-                print_function(func)
+            print_functions(functions)
     except FileNotFoundError:
         print(f"Error: File '{args.file_path}' not found.", file=sys.stderr)
         sys.exit(1)
@@ -40,5 +39,6 @@ def sort_criteria(function):
     # Sort primarily by visibility, then by function name
     return (priority, name)
 
-def print_function(function):
-    print(f"Name: {function[0]:<25} Visibility: {function[1]}")
+def print_functions(functions):
+    for function in functions:
+        print(f"Name: {function[0]:<25} Visibility: {function[1]}")
